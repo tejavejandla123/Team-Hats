@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urban Tree Planting and Monitoring</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=La+Belle+Aurore|Fira+Sans:400,700">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+    <style>
+        body {
+            font-family: 'Fira Sans', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #57ec5e;
+        }
+
+        .column {
+            width: 48%;
+            background-color: #f8f8f8;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin: 1%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #57ec5e;
+            color: white;
+        }
+
+        .btn-primary {
+            background-color: #57ec5e;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #57ec5e;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.9em;
+        }
+    </style>
+    <link href="./main.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Urban Tree Management</h1>
+        <br><h1 ><a href="./index.html" title="">Home</a></h1>
+        <div class="row">
+            <div class="column">
+                <h2>Donor Details</h2>
+                <table id="donorTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Amount Donated</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dynamic donor details will be filled here -->
+                    </tbody>
+                </table>
+                <button class="btn btn-primary" id="donateButton">Donate</button>
+            </div>
+
+            <div class="column">
+                <h2>Tree Planter Details</h2>
+                <table id="planterTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Tree Type</th>
+                            <th>Date Planted</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dynamic planter details will be filled here -->
+                    </tbody>
+                </table>
+                <button class="btn btn-primary" id="plantButton">Plant a Tree</button>
+            </div>
+        </div>
+
+        <!-- Donation Form -->
+        <div class="container" id="donationFormContainer" style="display:none;">
+            <h1>Donation Form</h1>
+            <form id="donationForm">
+                <div class="form-group">
+                    <label for="donorName">Donor Name:</label>
+                    <input type="text" class="form-control" id="donorName" name="donorName" required>
+                    <div id="nameError" class="error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="donorAddress">Donor Address:</label>
+                    <textarea class="form-control" id="donorAddress" name="donorAddress" rows="4" required></textarea>
+                    <div id="addressError" class="error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="donorEmail">Donor Email:</label>
+                    <input type="email" class="form-control" id="donorEmail" name="donorEmail" required>
+                    <div id="emailError" class="error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="donationAmount">Donation Amount (in Rupees):</label>
+                    <input type="number" class="form-control" id="donationAmount" name="donationAmount" required min="1" step="any">
+                    <div id="amountError" class="error"></div>
+                </div>
+                <input type="submit" class="btn btn-primary" value="Donate">
+            </form>
+        </div>
+
+        <!-- Planting Form -->
+        <div class="container" id="plantFormContainer" style="display:none;">
+            <h1>Plant a Tree</h1>
+            <form id="plantForm">
+                <div class="form-group">
+                    <label for="planterName">Your Name:</label>
+                    <input type="text" class="form-control" id="planterName" name="planterName" required>
+                </div>
+                <div class="form-group">
+                    <label for="plantName">Select Plant:</label>
+                    <select class="form-control" id="plantName" name="plantName" required>
+                        <option value="">Select a plant</option>
+                        <option value="Neem">Neem</option>
+                        <option value="Peepal">Peepal</option>
+                        <option value="Amla">Amla</option>
+                        <option value="Sal">Sal</option>
+                        <option value="Jamun">Jamun</option>
+                        <option value="Banyan">Banyan</option>
+                        <option value="Asopalav">Asopalav</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="usage">Usage of Planting the Tree:</label>
+                    <textarea class="form-control" id="usage" name="usage" rows="4" required></textarea>
+                </div>
+                <input type="submit" class="btn btn-primary" value="Submit">
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Sample data for demonstration
+        const donors = [
+            { name: "John Doe", amount: "$100", date: "2023-01-15" },
+            { name: "Jane Smith", amount: "$200", date: "2023-02-20" },
+            { name: "Emily Johnson", amount: "$150", date: "2023-03-10" }
+        ];
+
+        const planters = [
+            { name: "Michael Brown", tree: "Oak", date: "2023-01-20" },
+            { name: "Sarah Davis", tree: "Pine", date: "2023-02-25" },
+            { name: "David Wilson", tree: "Maple", date: "2023-03-15" }
+        ];
+
+        // Function to populate donor details
+        function populateDonorDetails() {
+            const donorTableBody = document.getElementById('donorTable').getElementsByTagName('tbody')[0];
+            donors.forEach(donor => {
+                const row = donorTableBody.insertRow();
+                row.insertCell(0).innerText = donor.name;
+                row.insertCell(1).innerText = donor.amount;
+                row.insertCell(2).innerText = donor.date;
+            });
+        }
+
+        // Function to populate planter details
+        function populatePlanterDetails() {
+            const planterTableBody = document.getElementById('planterTable').getElementsByTagName('tbody')[0];
+            planters.forEach(planter => {
+                const row = planterTableBody.insertRow();
+                row.insertCell(0).innerText = planter.name;
+                row.insertCell(1).innerText = planter.tree;
+                row.insertCell(2).innerText = planter.date;
+            });
+        }
+
+        // Event listeners for buttons
+        document.getElementById('donateButton').addEventListener('click', function() {
+            document.getElementById('donationFormContainer').style.display = 'block';
+            document.getElementById('plantFormContainer').style.display = 'none';
+        });
+
+        document.getElementById('plantButton').addEventListener('click', function() {
+            document.getElementById('plantFormContainer').style.display = 'block';
+            document.getElementById('donationFormContainer').style.display = 'none';
+        });
+
+        // Form submission for donation
+        document.getElementById('donationForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            // Clear previous error messages
+            document.getElementById('nameError').innerText = '';
+            document.getElementById('addressError').innerText = '';
+            document.getElementById('emailError').innerText = '';
+            document.getElementById('amountError').innerText = '';
+
+            // Get form values
+            const donorName = document.getElementById('donorName').value.trim();
+            const donorAddress = document.getElementById('donorAddress').value.trim();
+            const donorEmail = document.getElementById('donorEmail').value.trim();
+            const donationAmount = document.getElementById('donationAmount').value.trim();
+
+            let valid = true;
+
+            // Validate donor name
+            if (donorName === '') {
+                document.getElementById('nameError').innerText = 'Donor name is required.';
+                valid = false;
+            }
+
+            // Validate donor address
+            if (donorAddress === '') {
+                document.getElementById('addressError').innerText = 'Donor address is required.';
+                valid = false;
+            }
+
+            // Validate donor email
+            if (donorEmail === '') {
+                document.getElementById('emailError').innerText = 'Donor email is required.';
+                valid = false;
+            }
+
+            // Validate donation amount
+            if (donationAmount <= 0) {
+                document.getElementById('amountError').innerText = 'Donation amount must be greater than zero.';
+                valid = false;
+            }
+
+            // If valid, you can submit the form or perform any action
+            if (valid) {
+                alert(`Thank you, ${donorName}! You have donated ${donationAmount} Rupees.`);
+                // Here you can add code to send the data to a server
+            }
+        });
+
+        // Form submission for planting
+        document.getElementById('plantForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            const planterName = document.getElementById('planterName').value.trim();
+            const plantName = document.getElementById('plantName').value;
+            const usage = document.getElementById('usage').value.trim();
+
+            if (planterName === '' || plantName === '' || usage === '') {
+                alert('Please fill in all fields.');
+                return;
+            }
+
+            alert(`Thank you, ${planterName}! You have chosen to plant a ${plantName}.`);
+            // Here you can add code to send the data to a server
+        });
+
+        // Populate tables on page load
+        window.onload = function() {
+            populateDonorDetails();
+            populatePlanterDetails();
+        };
+    </script>
+</body>
+
+</html>
